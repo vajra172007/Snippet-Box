@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request){
+
+	w.Header().Add("Server", "Go")
 	w.Write([]byte("Hello from SnippetBox"))
 }
 func snippetView(w http.ResponseWriter, r *http.Request){
@@ -16,20 +17,14 @@ func snippetView(w http.ResponseWriter, r *http.Request){
 		http.NotFound(w, r)
 		return
 	}
-	msg := fmt.Sprintf("Display a specific Snippet with ID %d...",id)
-	w.Write([]byte(msg))
+	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
 func snippetCreate(w http.ResponseWriter, r *http.Request){
 	w.Write([]byte("Display a form for creating a new snippet..."))
 }
 
-func main(){
-	mux := http.NewServeMux()
-	mux.HandleFunc("/{$}",home)
-	mux.HandleFunc("/snippet/view/{id}",snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
-
-	err := http.ListenAndServe(":400",mux)
-	log.Fatal(err)
+func snippetCreatePost(w http.ResponseWriter, r *http.Request){
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Save a new snipprt..."))
 }
